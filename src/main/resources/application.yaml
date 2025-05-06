@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: super-ai-agent
+
+  ai:
+    dashscope:
+      api-key: sk-effdc91db4234d1aa416e3d633a95d77
+      chat:
+        options:
+          model: qwen-plus
+  ollama:
+    base-url: http://localhost:11434/
+    chat:
+      model: deepseek-r1:1.5b
+
+server:
+  port: 8089
+  servlet:
+    context-path: /ai
+
+
+
+super-ai-agent:
+  baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+  sdk:
+    apiKey: sk-effdc91db4234d1aa416e3d633a95d77
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: debug
