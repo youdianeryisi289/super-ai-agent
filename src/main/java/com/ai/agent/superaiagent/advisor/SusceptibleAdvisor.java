@@ -72,6 +72,16 @@ public class SusceptibleAdvisor implements StreamAroundAdvisor, CallAroundAdviso
                     .chatModel(advisedRequest.chatModel())
                     .chatOptions(advisedRequest.chatOptions())
                     .systemText(advisedRequest.systemText())
+                    .advisors(advisedRequest.advisors())
+                    .userText(advisedRequest.userText())
+                    .userParams(advisedRequest.userParams())
+                    .adviseContext(advisedRequest.adviseContext())
+                    .functionNames(advisedRequest.functionNames())
+                    .media(advisedRequest.media())
+                    .messages(advisedRequest.messages())
+                    .functionCallbacks(advisedRequest.functionCallbacks())
+                    .systemParams(advisedRequest.systemParams())
+                    .toolContext(advisedRequest.toolContext())
                     .userText(userText).build();
         }
         return advisedRequest;

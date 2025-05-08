@@ -2,6 +2,7 @@ package com.ai.agent.superaiagent.rag;
 
 import jakarta.annotation.Resource;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.BatchingStrategy;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -22,13 +23,22 @@ public class LoveAppVectorStoreConfig {
     @Resource
     private LoveAppDocumentLoader loveAppDocumentLoader;
 
+    @Resource
+    private BatchingStrategy customTokenCountBatchingStrategy;
+
 
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         // 加载文档
         List<Document> documents = loveAppDocumentLoader.loadMarkDown();
-        simpleVectorStore.add(documents);
+        // 批处理文档
+        List<List<Document>> batched = customTokenCountBatchingStrategy.batch(documents);
+
+        // 分批添加到向量数据库
+        for (List<Document> documentList : batched) {
+            simpleVectorStore.add(documentList);
+        }
         return simpleVectorStore;
     }
 }
