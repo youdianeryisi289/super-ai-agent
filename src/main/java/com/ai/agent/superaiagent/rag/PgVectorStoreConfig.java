@@ -45,7 +45,6 @@ public class PgVectorStoreConfig {
         List<Document> documents = loveAppDocumentLoader.loadMarkDown();
         log.info("加载出的文档信息为：{}", documents);
         vectorStore.add(documents);
-        log.info("vector的信息为：{}", vectorStore);
         return vectorStore;
 
     }
