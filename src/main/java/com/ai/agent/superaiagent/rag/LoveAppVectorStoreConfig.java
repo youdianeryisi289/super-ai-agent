@@ -1,6 +1,6 @@
 package com.ai.agent.superaiagent.rag;
 
-import com.ai.agent.superaiagent.split.MyTokenSplitter;
+import com.ai.agent.superaiagent.rag.split.MyTokenSplitter;
 import jakarta.annotation.Resource;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.BatchingStrategy;
@@ -30,12 +30,18 @@ public class LoveAppVectorStoreConfig {
     @Resource
     private BatchingStrategy customTokenCountBatchingStrategy;
 
+    @Resource
+    private MyKeywordEnricher myKeywordEnricher;
+
 
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(dashscopeEmbeddingModel).build();
         // 加载文档
         List<Document> documents = loveAppDocumentLoader.loadMarkDown();
+
+        // 自动补充关键信息
+        List<Document> enrichDocument = myKeywordEnricher.enrichDocument(documents);
 
         //  自主切分文档
         List<Document> splitDocumentCustom = myTokenSplitter.splitCustomized(documents);

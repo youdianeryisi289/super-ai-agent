@@ -1,4 +1,4 @@
-package com.ai.agent.superaiagent.split;
+package com.ai.agent.superaiagent.rag.split;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;

@@ -2,10 +2,10 @@ spring:
   application:
     name: super-ai-agent
 
-  datasource:
-    url: jdbc:postgresql://rm-cn-2zm494skw000htko.rwlb.rds.aliyuncs.com:5432/super_ai_agent
-    username: super_ai_agent
-    password: Sunjia12500
+  #datasource:
+    #url: jdbc:postgresql://rm-cn-2zm494skw000htko.rwlb.rds.aliyuncs.com:5432/super_ai_agent
+    #username: super_ai_agent
+    #password: Sunjia12500
 
   ai:
     dashscope:
@@ -14,12 +14,12 @@ spring:
         options:
           model: qwen-plus
 
-    vectorstore:
-      pgvector:
-        index-type: hnsw
-        dimensions: 1536
-        distance-type: cosine_distance
-        max-document-batch-size: 10000
+    #vectorstore:
+      #pgvector:
+        #index-type: hnsw
+        #dimensions: 1536
+        #distance-type: cosine_distance
+        #max-document-batch-size: 10000
 
   ollama:
     base-url: http://localhost:11434/
@@ -42,3 +42,6 @@ super-ai-agent:
 logging:
   level:
     org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: debug
+
+searchApi:
+  apiKey: 1P1dmcqnpiydqkpbHbjKgTcd
