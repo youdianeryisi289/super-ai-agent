@@ -46,19 +46,18 @@ public class RedisBasedChatMemory implements ChatMemory {
 
         for (Message message : messages) {
             String messageText = message.getText();
-            String[] strS = messageText.split("</think>");
-
-            String text =  strS.length == 2 ? strS[1] : strS[1];
 
             ChatEntity chatEntity = new ChatEntity();
             chatEntity.setChatId(conversationId);
-            chatEntity.setContent(text);
+            chatEntity.setContent(messageText);
             chatEntity.setType(message.getMessageType().getValue());
             chatEntityList.add(chatEntity);
         }
-        redisTemplate.opsForList().rightPushAll(key,chatEntityList.toArray());
+        for (ChatEntity chatEntity : chatEntityList) {
+            redisTemplate.opsForList().rightPush(key,chatEntity);
+        }
+        //redisTemplate.opsForList().rightPushAll(key,chatEntityList);
         redisTemplate.expire(key,30, TimeUnit.MINUTES);
-
     }
 
     /**

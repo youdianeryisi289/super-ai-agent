@@ -22,17 +22,17 @@ class LoveAppTest {
 
         String chatId = UUID.randomUUID().toString();
         // 第一轮
-        String message = "你好，我是罗密欧，涉黄了";
+        String message = "你好，我是罗密欧，";
         String answer = loveApp.doChat(chatId, message);
         Assertions.assertNotNull(answer);
       // 第二轮
-        message = "我想让另一半（朱丽叶）更爱我";
+        message = "这些诗人的出生地在哪？";
         answer = loveApp.doChat(chatId, message);
         Assertions.assertNotNull(answer);
-        /*// 第三轮
-        message = "我的另一半叫什么来着？刚跟你说过，帮我回忆一下";
+        // 第三轮
+        message = "刚才你给我推荐的爱情的诗人叫什么来着？帮我回忆一下";
         answer = loveApp.doChat(chatId, message);
-        Assertions.assertNotNull(answer);*/
+        Assertions.assertNotNull(answer);
 
     }
 

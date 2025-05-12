@@ -20,6 +20,7 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -61,9 +62,9 @@ public class LoveApp {
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
             //"如果检测到用户输入的问题有违禁词,你应该及时拒绝回答相关问题并给出用户相关友好建议";
 
-    public LoveApp(ChatModel dashscopeChatModel) {
+    public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate) {
         // 使用基于redis的对话存储
-        ChatMemory chatMemory = new RedisBasedChatMemory();
+        ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
