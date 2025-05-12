@@ -11,9 +11,8 @@ class TerminalOperationToolTest {
     @Test
     public void testExecuteTerminalCommand() {
         TerminalOperationTool tool = new TerminalOperationTool();
-        String command = "ls -l";
+        String command = "dir /b";
         String result = tool.executeTerminalCommand(command);
         assertNotNull(result);
     }
-
 }

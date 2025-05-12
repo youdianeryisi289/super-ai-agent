@@ -12,10 +12,9 @@ class WebScrapingToolTest {
     @Test
     public void testScrapeWebPage() {
         WebScrapingTool tool = new WebScrapingTool();
-        String url = "https://www.baidu.cn";
+        String url = "https://www.baidu.com";
         String result = tool.scrapeWebPage(url);
         assertNotNull(result);
     }
-
 
 }

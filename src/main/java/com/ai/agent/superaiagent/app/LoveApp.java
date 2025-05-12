@@ -4,6 +4,7 @@ import com.ai.agent.superaiagent.advisor.MyLoggerAdvisor;
 import com.ai.agent.superaiagent.advisor.ReReadingAdvisor;
 import com.ai.agent.superaiagent.advisor.SusceptibleAdvisor;
 import com.ai.agent.superaiagent.chatmemory.FileBasedChatMemory;
+import com.ai.agent.superaiagent.chatmemory.RedisBasedChatMemory;
 import com.ai.agent.superaiagent.rag.LoveAppRagCustomAdvisorFactory;
 import com.ai.agent.superaiagent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
@@ -61,26 +62,23 @@ public class LoveApp {
             //"如果检测到用户输入的问题有违禁词,你应该及时拒绝回答相关问题并给出用户相关友好建议";
 
     public LoveApp(ChatModel dashscopeChatModel) {
-      /*  // 初始化基于内存的对话记忆
-        ChatMemory chatMemory = new InMemoryChatMemory();
+        // 使用基于redis的对话存储
+        ChatMemory chatMemory = new RedisBasedChatMemory();
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory),
                         // 自定义日志Advisor
                         new MyLoggerAdvisor()
-                        // 自定义推理增强Advisor 可按需开启
-                        //new ReReadingAdvisor()
-                )
-                .build();*/
+                ).build();
         // 初始化基于文件的对话记忆
-        String fileDir = System.getProperty("user.dir") + "/chat-memory";
+        /*String fileDir = System.getProperty("user.dir") + "/chat-memory";
         ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
         chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
                         new MyLoggerAdvisor())
-                .build();
+                .build();*/
     }
 
     /**

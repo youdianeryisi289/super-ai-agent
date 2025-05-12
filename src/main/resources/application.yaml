@@ -2,6 +2,7 @@ spring:
   application:
     name: super-ai-agent
 
+
   #datasource:
     #url: jdbc:postgresql://rm-cn-2zm494skw000htko.rwlb.rds.aliyuncs.com:5432/super_ai_agent
     #username: super_ai_agent
@@ -25,6 +26,10 @@ spring:
     base-url: http://localhost:11434/
     chat:
       model: deepseek-r1:1.5b
+  data:
+    redis:
+      host: 127.0.0.1
+      database: 0
 
 server:
   port: 8089
