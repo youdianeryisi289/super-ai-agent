@@ -51,6 +51,12 @@ class LoveAppTest {
         String message = "我在约会，怎样给恋爱中的对方制造浪漫惊喜？";
         String answer =  loveApp.doChatWithRag(message, chatId);
         Assertions.assertNotNull(answer);
+        message = "你是基于什么样的考虑给我推荐这样的方式？";
+        answer = loveApp.doChatWithRag(message,chatId);
+        Assertions.assertNotNull(answer);
+        message = "在使用这些方式的时候，我需要注意什么？";
+        answer = loveApp.doChatWithRag(message,chatId);
+        Assertions.assertNotNull(answer);
     }
 
     @Test

@@ -56,7 +56,6 @@ public class RedisBasedChatMemory implements ChatMemory {
         for (ChatEntity chatEntity : chatEntityList) {
             redisTemplate.opsForList().rightPush(key,chatEntity);
         }
-        //redisTemplate.opsForList().rightPushAll(key,chatEntityList);
         redisTemplate.expire(key,30, TimeUnit.MINUTES);
     }
 
@@ -71,12 +70,16 @@ public class RedisBasedChatMemory implements ChatMemory {
         String key = CHAT_PREFIX + conversationId;
         // 列表当前包含的元素数量
         Long size = redisTemplate.opsForList().size(key);
-        if(size == 0){
+        if(size != null){
             return Collections.emptyList();
         }
 
         //  获取聊天对话的最近N条消息
+        // size = 2,lastN = 10 ==> start = 0,从第0条开始取
+        // size = 12,lastN = 10 ==> start = 2,从第3条开始取
         int start = Math.max(0,(int) (size - lastN));
+        // start = 0会返回列表中现存的所有消息
+        // start = 2会从列表中的第3条开始到最后全部消息
         List<Object> listTmp = redisTemplate.opsForList().range(key, start, -1);
         List<Message> listOut =  new ArrayList<>(listTmp.size());
         ObjectMapper objectMapper = new ObjectMapper();

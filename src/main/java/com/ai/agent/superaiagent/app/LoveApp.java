@@ -130,8 +130,8 @@ public class LoveApp {
                 // 开启日志，便于观察效果
                 .advisors(new MyLoggerAdvisor())
                 // 应用知识库问答
-                /*.advisors(new QuestionAnswerAdvisor(pgVectorVectorStore))
-                .advisors(
+                .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
+                /*.advisors(
                         LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(pgVectorVectorStore,"married")
                 )*/
                 // 云端知识库问答
