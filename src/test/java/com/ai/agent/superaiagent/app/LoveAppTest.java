@@ -83,8 +83,6 @@ class LoveAppTest {
     }
 
 
-
-
     private void testMessage(String message){
         String chatId = UUID.randomUUID().toString();
         String answer = loveApp.doChatWithTools(message, chatId);
@@ -97,6 +95,14 @@ class LoveAppTest {
         String message = "这张图片是什么内容?";
         String chatId = UUID.randomUUID().toString();
         String answer = loveApp.doChatWithMultiModel(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
+
+    @Test
+    void testChatWithMcp(){
+        String message = "帮我查询下保定市的天气";
+        String chatId = UUID.randomUUID().toString();
+        String answer = loveApp.doChatWithMcp(chatId, message);
         Assertions.assertNotNull(answer);
     }
 }
