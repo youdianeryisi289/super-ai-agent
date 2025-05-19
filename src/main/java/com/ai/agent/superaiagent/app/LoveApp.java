@@ -7,6 +7,7 @@ import com.ai.agent.superaiagent.chatmemory.FileBasedChatMemory;
 import com.ai.agent.superaiagent.chatmemory.RedisBasedChatMemory;
 import com.ai.agent.superaiagent.rag.LoveAppRagCustomAdvisorFactory;
 import com.ai.agent.superaiagent.rag.QueryRewriter;
+import dev.langchain4j.data.message.UserMessage;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -15,15 +16,23 @@ import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MimeTypeUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
@@ -40,6 +49,9 @@ public class LoveApp {
 
 
     private final ChatClient chatClient;
+
+    @Resource
+    private ChatModel chatModel;
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
@@ -62,11 +74,18 @@ public class LoveApp {
             "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
             //"如果检测到用户输入的问题有违禁词,你应该及时拒绝回答相关问题并给出用户相关友好建议";
 
+    @Value("classpath:/prompts/summarize-prompt.st")
+    private org.springframework.core.io.Resource systemResource;
+
+    @Value("classpath:/images/logo.png")
+    private org.springframework.core.io.Resource imageResource;
+
+
     public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate) {
         // 使用基于redis的对话存储
         ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
         chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem(SYSTEM_PROMPT)
+                //.defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory),
                         // 自定义日志Advisor
@@ -83,13 +102,20 @@ public class LoveApp {
     }
 
     /**
-     * 对话方法
+     * 普通对话方法
      * @param chatId
      * @param message
      * @return
      */
     public String doChat(String chatId,String message){
+        /*SystemPromptTemplate systemPromptTemplate =  new SystemPromptTemplate(systemResource);
+        Message systemtMessage = systemPromptTemplate.
+                createMessage(Map.of("role", "医生", "task", "拒绝回答"));
+        String messageText = systemtMessage.getText();*/
+        //log.info("文件内容的提示词为：{}",messageText);
         ChatResponse response = chatClient
+                //.prompt(messageText)
+                //.system(SYSTEM_PROMPT)
                 .prompt()
                 .user(message)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
@@ -115,6 +141,12 @@ public class LoveApp {
 
     }
 
+    /**
+     * rag 知识库聊天
+     * @param message
+     * @param chatId
+     * @return
+     */
     public String doChatWithRag(String message, String chatId) {
 
         // 使用查询重写 替换原始的用户输入的message
@@ -143,6 +175,12 @@ public class LoveApp {
         return content;
     }
 
+    /**
+     * todo 生成报告待完善
+     * @param message
+     * @param chatId
+     * @return
+     */
     public LoveReport doChatWithReport(String message,String chatId){
 
         LoveReport loveReport = chatClient
@@ -182,4 +220,27 @@ public class LoveApp {
     }
 
 
+    /**
+     * 多模态聊天测试
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithMultiModel(String message,String  chatId){
+
+       /* var imageData = new ClassPathResource("/test.png");
+        var  serMessage = UserMessage.builder().build().vat
+                .text("Explain what do you see on this picture?")
+                .media(List.of(new Media(MimeTypeUtils.IMAGE_PNG, imageData)))
+                .build();
+        var response = this.chatModel.call(new Prompt(List.of(userMessage)));*/
+
+        ChatResponse chatResponse = chatClient.prompt()
+                .user(u -> u.text(message).media(MimeTypeUtils.IMAGE_PNG, imageResource))
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
+                .call().chatResponse();
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content内容为：{}",content);
+        return content;
+    }
 }

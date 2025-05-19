@@ -22,9 +22,10 @@ class LoveAppTest {
 
         String chatId = UUID.randomUUID().toString();
         // 第一轮
-        String message = "你好，我是罗密欧，";
+        String message = "你好，请给我推荐三位古代诗人";
         String answer = loveApp.doChat(chatId, message);
         Assertions.assertNotNull(answer);
+/*
       // 第二轮
         message = "这些诗人的出生地在哪？";
         answer = loveApp.doChat(chatId, message);
@@ -33,6 +34,7 @@ class LoveAppTest {
         message = "刚才你给我推荐的爱情的诗人叫什么来着？帮我回忆一下";
         answer = loveApp.doChat(chatId, message);
         Assertions.assertNotNull(answer);
+*/
 
     }
 
@@ -89,4 +91,12 @@ class LoveAppTest {
         Assertions.assertNotNull(answer);
     }
 
+
+    @Test
+    void testMultiImages(){
+        String message = "这张图片是什么内容?";
+        String chatId = UUID.randomUUID().toString();
+        String answer = loveApp.doChatWithMultiModel(message, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }

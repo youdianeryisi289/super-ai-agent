@@ -41,6 +41,13 @@
             <version>5.8.37</version>
         </dependency>
 
+        <!-- -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-anthropic -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-anthropic</artifactId>
+            <version>1.0.0-M6</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
