@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: mcp-server-weather
+  ai:
+    mcp:
+      server:
+        name: mcp-server-weather
+        version: 1.0.0
+        stdio: true
+        type: SYNC
+
+gaode:
+  weather:
+    api_key: 19474fc1c3b0e544b30d0227291f78a4
+    request_url: https://restapi.amap.com/v3/weather/weatherInfo?
