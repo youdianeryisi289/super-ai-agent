@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Description: Spring AI 测试
  * @Version：1.0
  */
-@Component
+/*@Component
 public class SpringAIInvoke implements CommandLineRunner {
 
     @Resource
@@ -21,9 +21,9 @@ public class SpringAIInvoke implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        /*AssistantMessage output = dashscopeChatModel.call(new Prompt("你好，我是马牛"))
+        *//*AssistantMessage output = dashscopeChatModel.call(new Prompt("你好，我是马牛"))
                 .getResult()
                 .getOutput();
-        System.out.println(output.getText());*/
+        System.out.println(output.getText());*//*
     }
-}
+}*/

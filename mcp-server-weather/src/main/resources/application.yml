@@ -1,13 +1,10 @@
 spring:
   application:
     name: mcp-server-weather
-  ai:
-    mcp:
-      server:
-        name: mcp-server-weather
-        version: 1.0.0
-        stdio: true
-        type: SYNC
+  profiles:
+    active: stdio
+server:
+  port: 8127
 
 gaode:
   weather:

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mcp.weather.model.CityWeatherInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -22,7 +23,6 @@ public class WeatherService {
 
 
     // 请求接口的示例 https://restapi.amap.com/v3/weather/weatherInfo?city=110101&key=<用户key>
-
     @Value("${gaode.weather.api_key}")
     private String weatherApiKey;
 
@@ -35,8 +35,8 @@ public class WeatherService {
      * @param cityCode
      * @return
      */
-    @Tool(description = "Get weather information by city name ")
-    public CityWeatherInfoDto getWeatherInfoFromGaoDe(String cityCode) {
+    @Tool(description = "Search weather information by city name")
+    public String getWeatherInfoFromGaoDe(@ToolParam(description = "Search query key word") String cityCode) {
         String requestUrl = weatherBaseRequestUrl + "city=" + cityCode + "&key=" + weatherApiKey;
         log.info("本次发起请求查询天气的地址为：{}", requestUrl);
 
@@ -67,7 +67,7 @@ public class WeatherService {
             log.info("请求查询天气信息API的status响应非1");
             return null;
         }
-        return cityWeatherInfoDto;
+        return JSONUtil.toJsonStr(cityWeatherInfoDto);
     }
 
 }

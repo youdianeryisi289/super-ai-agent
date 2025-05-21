@@ -1,0 +1,12 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: mcp-server-weather
+        version: 0.0.1
+        type: SYNC
+        # sse
+        stdio: false
+
+server:
+  port: 8127

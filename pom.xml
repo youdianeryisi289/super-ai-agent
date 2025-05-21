@@ -43,11 +43,11 @@
 
         <!-- -->
         <!-- https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-anthropic -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-anthropic</artifactId>
             <version>1.0.0-M6</version>
-        </dependency>
+        </dependency>-->
 
 
         <dependency>
@@ -69,11 +69,11 @@
             <version>1.0.0-beta2</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
             <version>1.0.0-M6</version>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
         <dependency>

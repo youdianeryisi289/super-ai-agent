@@ -26,6 +26,7 @@ import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -53,6 +54,9 @@ public class LoveApp {
 
     @Resource
     private ChatModel chatModel;
+
+   /* @Resource
+    private AnthropicChatModel anthropicChatModel;*/
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
@@ -118,9 +122,9 @@ public class LoveApp {
         String messageText = systemtMessage.getText();*/
         //log.info("文件内容的提示词为：{}",messageText);
         ChatResponse response = chatClient
-                //.prompt(messageText)
-                //.system(SYSTEM_PROMPT)
                 .prompt()
+                .system(SYSTEM_PROMPT)
+                //.prompt()
                 .user(message)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
@@ -231,14 +235,6 @@ public class LoveApp {
      * @return
      */
     public String doChatWithMultiModel(String message,String  chatId){
-
-       /* var imageData = new ClassPathResource("/test.png");
-        var  serMessage = UserMessage.builder().build().vat
-                .text("Explain what do you see on this picture?")
-                .media(List.of(new Media(MimeTypeUtils.IMAGE_PNG, imageData)))
-                .build();
-        var response = this.chatModel.call(new Prompt(List.of(userMessage)));*/
-
         ChatResponse chatResponse = chatClient.prompt()
                 .user(u -> u.text(message).media(MimeTypeUtils.IMAGE_PNG, imageResource))
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId))
