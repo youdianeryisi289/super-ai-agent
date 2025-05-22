@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  * 处理工具调用的基础代理类，
+ * 在reAct模式上增加了工具调用能力
  * 具体实现了 think 和 act 方法
  * 可以用作创建实例的父类
  */
@@ -57,6 +58,10 @@ public class ToolCallAgent extends ReActAgent {
                 .build();
     }
 
+    /**
+     * 和AI交互思考使用什么工具
+     * @return
+     */
     @Override
     public boolean think() {
 
@@ -79,23 +84,29 @@ public class ToolCallAgent extends ReActAgent {
 
             // 记录响应 用于reAct
             this.toolCallChatResponse = chatResponse;
-            AssistantMessage assistantMessage = chatResponse.getResult().getOutput();
+            AssistantMessage assistantMessage = null;
+            String result = null;
+            List<AssistantMessage.ToolCall> toolCallList = null;
+            if(chatResponse != null){
+               assistantMessage =  chatResponse.getResult().getOutput();
+               // 输出提示信息
+               result = assistantMessage.getText();
+               toolCallList = assistantMessage.getToolCalls();
+               if (toolCallList != null){
+                   // 输出提示信息
+                   log.info(getName() + "的思考: " + result);
+                   log.info(getName() + "选择了 " + toolCallList.size() + " 个工具来使用");
 
-            // 输出提示信息
-            String result  = assistantMessage.getText();
-            List<AssistantMessage.ToolCall> toolCallList = assistantMessage.getToolCalls();
-            log.info(getName() + "的思考: " + result);
-            log.info(getName() + "选择了 " + toolCallList.size() + " 个工具来使用");
+                   String toolCallInfo = toolCallList.stream()
+                           .map(toolCall -> String.format("工具名称：%s，参数：%s",
+                                   toolCall.name(),
+                                   toolCall.arguments())
+                           )
+                           .collect(Collectors.joining("\n"));
+                   log.info(toolCallInfo);
 
-            String toolCallInfo = toolCallList.stream()
-                    .map(toolCall -> String.format("工具名称：%s，参数：%s",
-                            toolCall.name(),
-                            toolCall.arguments())
-                    )
-                    .collect(Collectors.joining("\n"));
-
-            log.info(toolCallInfo);
-
+               }
+            }
             if (toolCallList.isEmpty()){
                 // 只有不调用工具时，才记录助手消息
                 getChatMessages().add(assistantMessage);
@@ -113,6 +124,7 @@ public class ToolCallAgent extends ReActAgent {
     }
 
     /**
+     * 程序执行工具
      * 执行工具调用列表，得到返回结果，并将工具的响应添加到消息列表中：
      * @return
      */

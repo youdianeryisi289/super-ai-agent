@@ -10,6 +10,7 @@ import com.ai.agent.superaiagent.rag.QueryRewriter;
 import dev.langchain4j.data.message.UserMessage;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
@@ -49,14 +50,10 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 @Slf4j
 public class LoveApp {
 
-
     private final ChatClient chatClient;
 
-    @Resource
-    private ChatModel chatModel;
-
-   /* @Resource
-    private AnthropicChatModel anthropicChatModel;*/
+    @Resource(name = "anthropicModel")
+    private AnthropicChatModel anthropicChatModel;
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
@@ -89,16 +86,40 @@ public class LoveApp {
     private org.springframework.core.io.Resource imageResource;
 
 
-    public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate) {
+    /*public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate,
+                   AnthropicChatModel anthropicChatModel) {
         // 使用基于redis的对话存储
         ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
-        chatClient = ChatClient.builder(dashscopeChatModel)
+        chatClient = //ChatClient.builder(dashscopeChatModel)
+                ChatClient.builder(anthropicChatModel)
                 //.defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory),
                         // 自定义日志Advisor
                         new MyLoggerAdvisor()
                 ).build();
+        // 初始化基于文件的对话记忆
+        *//*String fileDir = System.getProperty("user.dir") + "/chat-memory";
+        ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
+        chatClient = ChatClient.builder(dashscopeChatModel)
+                .defaultSystem(SYSTEM_PROMPT)
+                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
+                        new MyLoggerAdvisor())
+                .build();*//*
+    }*/
+
+
+    public LoveApp(@Qualifier("anthropicChatModel") ChatModel anthropicChatModel,RedisTemplate<String,Object> redisTemplate) {
+        // 使用基于redis的对话存储
+        ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
+        chatClient = //ChatClient.builder(dashscopeChatModel)
+                ChatClient.builder(anthropicChatModel)
+                        //.defaultSystem(SYSTEM_PROMPT)
+                        .defaultAdvisors(
+                                new MessageChatMemoryAdvisor(chatMemory),
+                                // 自定义日志Advisor
+                                new MyLoggerAdvisor()
+                        ).build();
         // 初始化基于文件的对话记忆
         /*String fileDir = System.getProperty("user.dir") + "/chat-memory";
         ChatMemory chatMemory = new FileBasedChatMemory(fileDir);

@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 /**
  * ReAct (Reasoning and Acting) 模式的代理抽象类
  * 实现了思考-行动的循环模式
+ * 具体怎么思考、怎么行动交由子类实现
+ *
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
