@@ -30,7 +30,7 @@ public class RedisBasedChatMemory implements ChatMemory {
     /**
      * key 前缀
      */
-    private static final String CHAT_PREFIX = "chat:history";
+    private static final String CHAT_PREFIX = "chat:history:";
 
     /**
      * 添加对话内容到redis记忆
@@ -70,7 +70,7 @@ public class RedisBasedChatMemory implements ChatMemory {
         String key = CHAT_PREFIX + conversationId;
         // 列表当前包含的元素数量
         Long size = redisTemplate.opsForList().size(key);
-        if(size != null){
+        if(size == null){
             return Collections.emptyList();
         }
 

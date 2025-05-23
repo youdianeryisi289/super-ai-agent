@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EmbeddingConfig {
 
-
     @Bean
     public BatchingStrategy customTokenCountBatchingStrategy() {
         return new TokenCountBatchingStrategy(
@@ -24,5 +23,4 @@ public class EmbeddingConfig {
                 0.1                        // 设置保留百分比
         );
     }
-
 }

@@ -32,6 +32,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
+import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,9 +52,6 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class LoveApp {
 
     private final ChatClient chatClient;
-
-    @Resource(name = "anthropicModel")
-    private AnthropicChatModel anthropicChatModel;
 
     @Resource
     private Advisor loveAppRagCloudAdvisor;
@@ -86,48 +84,16 @@ public class LoveApp {
     private org.springframework.core.io.Resource imageResource;
 
 
-    /*public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate,
-                   AnthropicChatModel anthropicChatModel) {
+    public LoveApp(ChatModel dashscopeChatModel,RedisTemplate<String,Object> redisTemplate) {
         // 使用基于redis的对话存储
         ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
-        chatClient = //ChatClient.builder(dashscopeChatModel)
-                ChatClient.builder(anthropicChatModel)
-                //.defaultSystem(SYSTEM_PROMPT)
+        chatClient = ChatClient.builder(dashscopeChatModel)
+                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatMemory),
                         // 自定义日志Advisor
                         new MyLoggerAdvisor()
                 ).build();
-        // 初始化基于文件的对话记忆
-        *//*String fileDir = System.getProperty("user.dir") + "/chat-memory";
-        ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
-        chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem(SYSTEM_PROMPT)
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
-                        new MyLoggerAdvisor())
-                .build();*//*
-    }*/
-
-
-    public LoveApp(@Qualifier("anthropicChatModel") ChatModel anthropicChatModel,RedisTemplate<String,Object> redisTemplate) {
-        // 使用基于redis的对话存储
-        ChatMemory chatMemory = new RedisBasedChatMemory(redisTemplate);
-        chatClient = //ChatClient.builder(dashscopeChatModel)
-                ChatClient.builder(anthropicChatModel)
-                        //.defaultSystem(SYSTEM_PROMPT)
-                        .defaultAdvisors(
-                                new MessageChatMemoryAdvisor(chatMemory),
-                                // 自定义日志Advisor
-                                new MyLoggerAdvisor()
-                        ).build();
-        // 初始化基于文件的对话记忆
-        /*String fileDir = System.getProperty("user.dir") + "/chat-memory";
-        ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
-        chatClient = ChatClient.builder(dashscopeChatModel)
-                .defaultSystem(SYSTEM_PROMPT)
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
-                        new MyLoggerAdvisor())
-                .build();*/
     }
 
     /**
@@ -145,7 +111,6 @@ public class LoveApp {
         ChatResponse response = chatClient
                 .prompt()
                 .system(SYSTEM_PROMPT)
-                //.prompt()
                 .user(message)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
@@ -282,5 +247,20 @@ public class LoveApp {
             return content;
         }
         return null;
+    }
+
+    /**
+     * 支持流式调用输出
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public Flux<String> doChatByStream(String message, String chatId) {
+        return chatClient.prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .stream()
+                .content();
     }
 }

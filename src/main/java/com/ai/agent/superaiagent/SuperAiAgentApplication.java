@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 //@SpringBootApplication(exclude = PgVectorStoreAutoConfiguration.class)
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class
-        ,PgVectorStoreAutoConfiguration.class})
+        ,PgVectorStoreAutoConfiguration.class, AnthropicAutoConfiguration.class})
 public class SuperAiAgentApplication {
 
     public static void main(String[] args) {
